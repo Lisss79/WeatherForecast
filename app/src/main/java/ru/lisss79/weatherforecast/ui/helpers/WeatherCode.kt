@@ -15,7 +15,7 @@ data class WeatherCode(val code: Int?, val text: String, val icon: Int) {
             0 to WeatherCode(0, "clear sky", R.drawable.sun),
             1 to WeatherCode(1, "mainly clear", R.drawable.sun_and_cloud),
             2 to WeatherCode(2, "partly cloudy", R.drawable.sun_and_cloud),
-            3 to WeatherCode(2, "overcast", R.drawable.cloud),
+            3 to WeatherCode(3, "overcast", R.drawable.cloud),
             45 to WeatherCode(45, "fog", R.drawable.cloud),
             48 to WeatherCode(48, "depositing rime fog", R.drawable.sun_and_cloud),
             51 to WeatherCode(51, "light drizzle", R.drawable.drizzle),
