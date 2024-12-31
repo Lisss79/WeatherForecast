@@ -2,6 +2,9 @@ package ru.lisss79.weatherforecast.ui.mainelements
 
 import android.location.Location
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.ScrollableState
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +12,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -120,30 +125,34 @@ fun PlacesScreen(
                     )
                 }
             }
-            CurrentPlaceItem(
-                onClick = {
-                    dataStoreHelper.setSelectedPlace(Values.selectedPlaceDefault)
-                    onPlacesChanged()
-                },
-                selected = selectedPlace.value == Values.selectedPlaceDefault
-            )
-
-            PlacesList(
-                placesSet = sortedPlacesSet,
-                selectedPlace = selectedPlace,
-                onClick = { selectedPlace ->
-                    dataStoreHelper.setSelectedPlace(selectedPlace)
-                    onPlacesChanged()
-                },
-                onRemove = { selected ->
-                    val newPlaces = LinkedHashSet(placesList.value)
-                    newPlaces.remove(placesList.value.elementAt(selected))
-                    dataStoreHelper.setPlacesList(newPlaces)
-                    if (selectedPlace.value == selected)
+            Column(
+                modifier = Modifier.verticalScroll(rememberScrollState())
+            ) {
+                CurrentPlaceItem(
+                    onClick = {
                         dataStoreHelper.setSelectedPlace(Values.selectedPlaceDefault)
-                    onPlacesChanged()
-                }
-            )
+                        onPlacesChanged()
+                    },
+                    selected = selectedPlace.value == Values.selectedPlaceDefault
+                )
+
+                PlacesList(
+                    placesSet = sortedPlacesSet,
+                    selectedPlace = selectedPlace,
+                    onClick = { selectedPlace ->
+                        dataStoreHelper.setSelectedPlace(selectedPlace)
+                        onPlacesChanged()
+                    },
+                    onRemove = { selected ->
+                        val newPlaces = LinkedHashSet(placesList.value)
+                        newPlaces.remove(placesList.value.elementAt(selected))
+                        dataStoreHelper.setPlacesList(newPlaces)
+                        if (selectedPlace.value == selected)
+                            dataStoreHelper.setSelectedPlace(Values.selectedPlaceDefault)
+                        onPlacesChanged()
+                    }
+                )
+            }
         }
         FloatingActionButton(
             onClick = {
