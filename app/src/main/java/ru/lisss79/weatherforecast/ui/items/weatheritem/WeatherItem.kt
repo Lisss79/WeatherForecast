@@ -20,12 +20,15 @@ import androidx.compose.ui.unit.dp
 import com.huawei.hms.site.api.model.Site
 import ru.lisss79.weatherforecast.entities.Coords
 import ru.lisss79.weatherforecast.entities.LoadingState
+import ru.lisss79.weatherforecast.entities.WeatherDetail
+import ru.lisss79.weatherforecast.entities.WeatherQuery
 import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 
 @Composable
 fun WeatherItem(
     modifier: Modifier = Modifier,
     universalWeatherState: UniversalWeatherState?,
+    weatherQuery: WeatherQuery? = null,
     placeState: Site? = null,
     coordsState: Coords? = null,
     showPlace: Boolean = false,
@@ -38,12 +41,15 @@ fun WeatherItem(
         shape = MaterialTheme.shapes.medium
     ) {
         when {
-            loadingState == LoadingState.LOADING_WEATHER &&  universalWeatherState == null ->
+            loadingState == LoadingState.LOADING_WEATHER && universalWeatherState == null ->
                 NoDataText("Loading weather...")
-            loadingState == LoadingState.LOADING_COORDS &&  universalWeatherState == null ->
+
+            loadingState == LoadingState.LOADING_COORDS && universalWeatherState == null ->
                 NoDataText("Loading GPS coordinates...")
-            loadingState == LoadingState.LOADING_TIMEZONES &&  universalWeatherState == null ->
+
+            loadingState == LoadingState.LOADING_TIMEZONES && universalWeatherState == null ->
                 NoDataText("Updating timezones...")
+
             else -> {
                 if (universalWeatherState != null) {
                     Row(
@@ -74,7 +80,10 @@ fun WeatherItem(
                                 .weight(5f)
                                 .padding(vertical = 4.dp)
                         ) {
-                            WeatherDetailsItem(universalWeatherState = universalWeatherState)
+                            WeatherDetailsItem(
+                                universalWeatherState = universalWeatherState,
+                                weatherQuery = weatherQuery
+                            )
                         }
                     }
                 } else {
@@ -105,11 +114,16 @@ fun NoDataText(text: String) {
 fun CurrentWeatherItemPreview() {
     val weatherState = MockData.usualCurrentWeatherState
     val coords = MockData.usualCoords
-    WeatherItem(universalWeatherState = weatherState, coordsState = coords, showPlace = true)
+    WeatherItem(
+        universalWeatherState = weatherState,
+        coordsState = coords,
+        showPlace = true,
+        weatherQuery = WeatherDetail.getAllWeatherQueries()
+    )
 }
 
 @Preview(name = "Without data")
 @Composable
 fun CurrentWeatherItemEmptyPreview() {
-    WeatherItem(universalWeatherState = null)
+    WeatherItem(universalWeatherState = null, weatherQuery = null)
 }

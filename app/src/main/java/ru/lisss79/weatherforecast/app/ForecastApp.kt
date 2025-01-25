@@ -1,6 +1,7 @@
 package ru.lisss79.weatherforecast.app
 
 import android.app.Application
+import com.google.android.material.color.DynamicColors
 import org.kodein.di.DI
 import org.kodein.di.DIAware
 import ru.lisss79.weatherforecast.di.apiModule
@@ -16,6 +17,7 @@ class ForecastApp: Application(), DIAware {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        DynamicColors.applyToActivitiesIfAvailable(this)
     }
 
     override val di by DI.lazy {

@@ -60,14 +60,11 @@ fun WeatherTimeCoordsItem(
             ),
             style = MaterialTheme.typography.bodyMedium
         )
-        Icon(
-            painter = painterResource(
-                id = WeatherCode.getWeatherCode(universalWeatherState).icon
-            ),
-            contentDescription = "weather_icon",
+        WeatherIcon(
             modifier = Modifier.size(50.dp),
-            tint = Color.Unspecified
+            universalWeatherState = universalWeatherState
         )
+
         if (showPlace) {
             Spacer(modifier = Modifier.height(8.dp))
             if (placeState != null) {

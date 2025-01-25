@@ -12,12 +12,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.huawei.hms.site.api.model.Site
+import ru.lisss79.weatherforecast.entities.WeatherQuery
 import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 
 @Composable
 fun UniversalForecastWeatherList(
     modifier: Modifier = Modifier,
     universalWeatherState: List<UniversalWeatherState?>?,
+    weatherQuery: WeatherQuery,
     columnState: LazyListState,
     placeStates: Set<Site>? = null,
     showPlace: Boolean = false
@@ -41,8 +43,9 @@ fun UniversalForecastWeatherList(
                                 modifier = Modifier.padding(vertical = 2.dp),
                                 placeState = placeState,
                                 universalWeatherState = state,
+                                weatherQuery = weatherQuery,
                                 showPlace = true,
-                                justPlace = true
+                                justPlace = true,
                             )
                         }
                     }
@@ -50,6 +53,7 @@ fun UniversalForecastWeatherList(
                     WeatherItem(
                         modifier = Modifier.padding(vertical = 2.dp),
                         universalWeatherState = state,
+                        weatherQuery = weatherQuery,
                         showPlace = false
                     )
                 }
@@ -64,6 +68,7 @@ fun UniversalForecastWeatherList(
 fun UniversalForecastWeatherListPreview() {
     UniversalForecastWeatherList(
         universalWeatherState = List(20) { MockData.usualDailyWeatherState },
-        columnState = rememberLazyListState()
+        columnState = rememberLazyListState(),
+        weatherQuery = WeatherQuery()
     )
 }

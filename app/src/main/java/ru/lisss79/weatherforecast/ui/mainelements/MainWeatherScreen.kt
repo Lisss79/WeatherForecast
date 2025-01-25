@@ -19,6 +19,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,10 +32,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import ru.lisss79.weatherforecast.data.datastore.DataStoreHelper
 import ru.lisss79.weatherforecast.entities.Errors
 import ru.lisss79.weatherforecast.entities.ForecastMode
 import ru.lisss79.weatherforecast.entities.Values
+import ru.lisss79.weatherforecast.entities.WeatherQuery
 import ru.lisss79.weatherforecast.ui.items.GettingDataScreen
 import ru.lisss79.weatherforecast.ui.items.ToastShowing
 import ru.lisss79.weatherforecast.ui.items.weatheritem.UniversalForecastWeatherList
@@ -61,6 +64,7 @@ fun MainWeatherScreen(
         .placesListFlow.collectAsStateWithLifecycle(setOf())
     val selectedPlace = dataStoreHelper
         .selectedPlaceFlow.collectAsStateWithLifecycle(Values.selectedPlaceDefault)
+    var fieldsToShow by remember { mutableStateOf(WeatherQuery()) }
     var refreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(refreshing, {
         refreshing = true
@@ -76,6 +80,11 @@ fun MainWeatherScreen(
     // TODO: custom saver & rememberSavable
     val isScrolled by remember { derivedStateOf { columnState.firstVisibleItemIndex > 0 }}
     val localScope = rememberCoroutineScope()
+
+    LaunchedEffect(key1 = Unit) {
+        fieldsToShow = dataStoreHelper.getWeatherQueries()
+    }
+
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -98,6 +107,7 @@ fun MainWeatherScreen(
                         )
                     ),
                 universalWeatherState = currentWeatherState.value,
+                weatherQuery = fieldsToShow,
                 placeState = placeState.value,
                 coordsState = coordsState.value,
                 showPlace = true,
@@ -119,6 +129,7 @@ fun MainWeatherScreen(
                     UniversalForecastWeatherList(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         universalWeatherState = forecastWeatherState.value,
+                        weatherQuery = fieldsToShow,
                         columnState = columnState,
                         placeStates = placesList.value,
                         showPlace = forecastModeSetting.value == ForecastMode.DIFFERENT_PLACES

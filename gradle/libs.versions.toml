@@ -27,6 +27,7 @@ retrofit = "2.11.0"
 site = "6.5.1.302"
 uiTiles = "2.4.0"
 uiTilesExtended = "2.4.0"
+materialVersion = "1.12.0"
 
 [libraries]
 agconnect-core = { module = "com.huawei.agconnect:agconnect-core", version.ref = "agcp" }
@@ -64,6 +65,7 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 site = { module = "com.huawei.hms:site", version.ref = "site" }
 ui-tiles = { module = "com.github.alorma.compose-settings:ui-tiles", version.ref = "uiTiles" }
 ui-tiles-extended = { module = "com.github.alorma.compose-settings:ui-tiles-extended", version.ref = "uiTilesExtended" }
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -1,5 +1,6 @@
 package ru.lisss79.weatherforecast.entities
 
+import kotlinx.coroutines.flow.first
 import java.util.concurrent.Flow.Subscription
 
 object Values {
@@ -53,6 +54,27 @@ enum class WeatherDetail(val menuName: String, val queryName: String, val fieldN
             }
             return null
         }
+        private fun getByQueryName(queryName: String): WeatherDetail? {
+            WeatherDetail.entries.forEach {
+                if (queryName == it.queryName) return it
+            }
+            return null
+        }
+        fun queryNamesToFieldNames(queryNames: List<String>): List<String> {
+            return queryNames.mapNotNull { getByQueryName(it)?.fieldName }
+        }
+
+        fun getAllWeatherQueries(): WeatherQuery {
+            val q1 = CurrentWeatherDetails.entries.map { it.queryName }
+            val q2 = HourlyWeatherDetails.entries.map { it.queryName }
+            val q3 = DailyWeatherDetails.entries.map { it.queryName }
+            return WeatherQuery(
+                currentQuery = q1,
+                hourlyQuery = q2,
+                dailyQuery = q3
+            )
+        }
+
     }
 }
 

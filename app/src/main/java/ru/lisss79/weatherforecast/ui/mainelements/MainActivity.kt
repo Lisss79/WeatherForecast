@@ -30,6 +30,8 @@ import org.kodein.di.android.closestDI
 import ru.lisss79.weatherforecast.R
 import ru.lisss79.weatherforecast.data.datastore.DataStoreHelper
 import ru.lisss79.weatherforecast.entities.Values
+import ru.lisss79.weatherforecast.entities.WeatherDetail
+import ru.lisss79.weatherforecast.entities.weather.WeatherData
 import ru.lisss79.weatherforecast.ui.navigation.BaseNavigationElement
 import ru.lisss79.weatherforecast.ui.theme.WeatherForecastTheme
 import java.net.URLEncoder
@@ -124,7 +126,8 @@ fun refreshData(
         val selectedPlace = dataStoreHelper.selectedPlaceFlow.first()
         val placesList = dataStoreHelper.placesListFlow.first()
         val forecastMode = dataStoreHelper.forecastModeFlow.first()
-        val queries = dataStoreHelper.getWeatherQueries()
+        //val queries = dataStoreHelper.getWeatherQueries()
+        val queries = WeatherDetail.getAllWeatherQueries()
         if (updateTimeOffset) {
             val newPlaces = viewModel.updateTimeOffset(placesList)
             dataStoreHelper.setPlacesList(newPlaces)

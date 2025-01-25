@@ -105,6 +105,7 @@ dependencies {
     implementation(libs.kodein.di)
     implementation(libs.kodein.di.framework.android.core)
     implementation(libs.kodein.di.framework.compose)
+    implementation(libs.material)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

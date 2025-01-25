@@ -101,7 +101,6 @@ class DataStoreHelper(private val context: Context, private val scope: Coroutine
         )
     }
 
-
     fun setGeocoderRepository(selectedGeocoder: GeocoderRepositoryVariant) {
         scope.launch {
             context.dataStore.edit { settings ->
