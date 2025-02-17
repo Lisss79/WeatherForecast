@@ -186,7 +186,7 @@ fun PlacesScreen(
     }
 }
 
-fun getSortedList(
+private fun getSortedList(
     placesSet: Set<Site>,
     mode: PlacesSortingMode,
     viewModel: WeatherViewModel

@@ -1,5 +1,6 @@
 package ru.lisss79.weatherforecast.ui.mainelements
 
+import android.location.Location
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.EaseOut
@@ -31,13 +32,15 @@ import androidx.compose.ui.BiasAlignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.huawei.hms.site.api.model.Site
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import ru.lisss79.weatherforecast.data.datastore.DataStoreHelper
 import ru.lisss79.weatherforecast.entities.Errors
 import ru.lisss79.weatherforecast.entities.ForecastMode
+import ru.lisss79.weatherforecast.entities.PlacesSortingMode
 import ru.lisss79.weatherforecast.entities.Values
 import ru.lisss79.weatherforecast.entities.WeatherQuery
+import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 import ru.lisss79.weatherforecast.ui.items.GettingDataScreen
 import ru.lisss79.weatherforecast.ui.items.ToastShowing
 import ru.lisss79.weatherforecast.ui.items.weatheritem.UniversalForecastWeatherList
@@ -62,6 +65,8 @@ fun MainWeatherScreen(
         .forecastModeFlow.collectAsStateWithLifecycle(ForecastMode.default)
     val placesList = dataStoreHelper
         .placesListFlow.collectAsStateWithLifecycle(setOf())
+    val sortingMode = dataStoreHelper
+        .placesSortingModeFlow.collectAsStateWithLifecycle(PlacesSortingMode.default)
     val selectedPlace = dataStoreHelper
         .selectedPlaceFlow.collectAsStateWithLifecycle(Values.selectedPlaceDefault)
     var fieldsToShow by remember { mutableStateOf(WeatherQuery()) }
@@ -78,8 +83,18 @@ fun MainWeatherScreen(
     })
     val columnState = rememberLazyListState()
     // TODO: custom saver & rememberSavable
-    val isScrolled by remember { derivedStateOf { columnState.firstVisibleItemIndex > 0 }}
+    val isScrolled by remember { derivedStateOf { columnState.firstVisibleItemIndex > 0 } }
     val localScope = rememberCoroutineScope()
+
+    val sortedPairs = if (forecastModeSetting.value == ForecastMode.DIFFERENT_PLACES)
+        remember {
+            derivedStateOf {
+                forecastWeatherState.value?.let { weathers ->
+                    val pairs = placesList.value.zip(weathers)
+                    getSortedPairsList(pairs, sortingMode.value, viewModel)
+                }
+            }
+        } else null
 
     LaunchedEffect(key1 = Unit) {
         fieldsToShow = dataStoreHelper.getWeatherQueries()
@@ -126,14 +141,25 @@ fun MainWeatherScreen(
                             .align(BiasAlignment(0f, -0.2f))
                     )
                 } else {
-                    UniversalForecastWeatherList(
-                        modifier = Modifier.padding(horizontal = 8.dp),
-                        universalWeatherState = forecastWeatherState.value,
-                        weatherQuery = fieldsToShow,
-                        columnState = columnState,
-                        placeStates = placesList.value,
-                        showPlace = forecastModeSetting.value == ForecastMode.DIFFERENT_PLACES
-                    )
+                    if (forecastModeSetting.value == ForecastMode.DIFFERENT_PLACES) {
+                        UniversalForecastWeatherList(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            universalWeatherState = sortedPairs?.value?.map { it.second },
+                            weatherQuery = fieldsToShow,
+                            columnState = columnState,
+                            placeStates = sortedPairs?.value?.map { it.first }?.toSet(),
+                            showPlace = true
+                        )
+                    } else {
+                        UniversalForecastWeatherList(
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            universalWeatherState = forecastWeatherState.value,
+                            weatherQuery = fieldsToShow,
+                            columnState = columnState,
+                            placeStates = null,
+                            showPlace = false
+                        )
+                    }
                 }
                 this@Column.AnimatedVisibility(
                     modifier = Modifier
@@ -167,4 +193,33 @@ fun MainWeatherScreen(
     }
     if (errorsState.value != Errors.UNSPECIFIED && errorsState.value != Errors.NO_ERRORS)
         ToastShowing(message = errorsState.value.message)
+}
+
+private fun getSortedPairsList(
+    pairs: List<Pair<Site, UniversalWeatherState?>>,
+    mode: PlacesSortingMode,
+    viewModel: WeatherViewModel
+): List<Pair<Site, UniversalWeatherState?>> {
+    val currentCoords = viewModel.coords.value
+    val distance = floatArrayOf(0f)
+    val pairsWithDistance = pairs.map { pair ->
+        if (currentCoords != null) {
+            Location.distanceBetween(
+                currentCoords.latitude, currentCoords.longitude,
+                pair.first.location.lat, pair.first.location.lng, distance
+            )
+        }
+        Pair(pair, distance[0])
+    }
+    val newList = when (mode) {
+        PlacesSortingMode.UNSORTED -> pairsWithDistance
+        PlacesSortingMode.DISTANCE -> {
+            pairsWithDistance.sortedBy { it.second }
+        }
+
+        PlacesSortingMode.NAME -> {
+            pairsWithDistance.sortedBy { it.first.first.formatAddress }
+        }
+    }
+    return newList.map { it.first }
 }

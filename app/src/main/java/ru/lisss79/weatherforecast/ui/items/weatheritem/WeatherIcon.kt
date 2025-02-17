@@ -581,7 +581,7 @@ fun Modifier.fog(state: UniversalWeatherState): Modifier {
     val fogColor = Color(0xFF0E6096)
     val code = state.weatherCode
     val animPosition = getAnimation(3, false)
-    val snowAnimPosition = if (code == 48) getAnimation(number = 2) else listOf()
+    val snowAnimPosition = if (code == 48) getAnimation(number = 2, true) else listOf()
 
     return this then Modifier.drawWithCache {
         val factorCloud = size.width / cloud.width * 1.0
@@ -729,24 +729,13 @@ fun getAnimation(number: Int, restart: Boolean = true): List<Float> {
             targetValue = 100f,
             animationSpec = infiniteRepeatable(
                 animation = tween(1000 + Random.nextInt(500), easing = EaseIn),
-                repeatMode = RepeatMode.Restart,
+                repeatMode = if (restart) RepeatMode.Restart else RepeatMode.Reverse,
                 initialStartOffset = StartOffset(Random.nextInt(120))
             ),
             label = "positionAnimation1"
         )
         animations[index] = animPosition
     }
-
-    val animPosition1 by infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 100f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000 + Random.nextInt(500), easing = EaseIn),
-            repeatMode = if (restart) RepeatMode.Restart else RepeatMode.Reverse,
-            initialStartOffset = StartOffset(Random.nextInt(120))
-        ),
-        label = "positionAnimation1"
-    )
     return animations
 }
 
