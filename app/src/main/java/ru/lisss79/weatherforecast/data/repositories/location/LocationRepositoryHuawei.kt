@@ -2,7 +2,7 @@ package ru.lisss79.weatherforecast.data.repositories.location
 
 import android.annotation.SuppressLint
 import android.location.Location
-import com.huawei.hms.location.LocationServices
+import com.huawei.hms.location.LocationServices as HuaweiLocationServices
 import ru.lisss79.weatherforecast.app.ForecastApp
 import ru.lisss79.weatherforecast.entities.weather.WeatherException
 import java.util.concurrent.Executors
@@ -13,7 +13,7 @@ class LocationRepositoryHuawei : LocationRepository {
 
     @SuppressLint("MissingPermission")
     override suspend fun getCoords(): Result<Location> {
-        val fusedLocationProviderClient = LocationServices
+        val fusedLocationProviderClient = HuaweiLocationServices
             .getFusedLocationProviderClient(ForecastApp.instance)
         val locationTask = fusedLocationProviderClient.lastLocation
         val executor = Executors.newSingleThreadExecutor()

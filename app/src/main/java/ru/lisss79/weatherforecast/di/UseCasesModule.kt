@@ -5,6 +5,7 @@ import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryFactory
 import ru.lisss79.weatherforecast.data.repositories.location.LocationRepository
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryFactory
 import ru.lisss79.weatherforecast.data.repositories.timezone.TimeZoneRepository
 import ru.lisss79.weatherforecast.data.repositories.weather.WeatherRepository
 import ru.lisss79.weatherforecast.domain.coords.GetCoordsUseCase
@@ -40,7 +41,7 @@ val useCasesModule = DI.Module(name = "UseCase") {
         )
     }
     bindSingleton<GetCoordsUseCase> {
-        GetCoordsUseCase(instance<LocationRepository>())
+        GetCoordsUseCase(instance<LocationRepositoryFactory>())
     }
     bindSingleton<GetTimeOffsetUseCase> {
         GetTimeOffsetUseCase(instance<TimeZoneRepository>())

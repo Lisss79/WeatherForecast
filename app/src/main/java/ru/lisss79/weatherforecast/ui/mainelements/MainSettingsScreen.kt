@@ -20,6 +20,7 @@ import com.alorma.compose.settings.ui.SettingsRadioButton
 import kotlinx.coroutines.launch
 import ru.lisss79.weatherforecast.data.datastore.DataStoreHelper
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryVariant
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryVariant
 import ru.lisss79.weatherforecast.entities.ForecastMode
 
 @Composable
@@ -34,6 +35,8 @@ fun MainSettingsScreen(
     Column(
         modifier = modifier.padding(horizontal = 16.dp)
     ) {
+        val selectedLocationService = dataStoreHelper
+            .locationRepositoryFlow.collectAsStateWithLifecycle(LocationRepositoryVariant.default)
         val selectedGeocoder = dataStoreHelper
             .geocoderRepositoryFlow.collectAsStateWithLifecycle(GeocoderRepositoryVariant.default)
         val selectedForecastMode = dataStoreHelper
@@ -59,6 +62,33 @@ fun MainSettingsScreen(
                         if (!selected) {
                             scope.launch {
                                 dataStoreHelper.setGeocoderRepository(geocoderVariant)
+                                onSettingsChanged()
+                            }
+                        }
+                    },
+                )
+            }
+        }
+        SettingsGroup(
+            modifier = Modifier,
+            enabled = true,
+            title = {
+                Text(
+                    text = "Location Services Selection",
+                    color = MaterialTheme.colorScheme.onPrimaryContainer,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+        ) {
+            for (locationVariant in LocationRepositoryVariant.entries) {
+                val selected = locationVariant == selectedLocationService.value
+                SettingsRadioButton(
+                    state = selected,
+                    title = { Text(locationVariant.menuName) },
+                    onClick = {
+                        if (!selected) {
+                            scope.launch {
+                                dataStoreHelper.setLocationRepository(locationVariant)
                                 onSettingsChanged()
                             }
                         }

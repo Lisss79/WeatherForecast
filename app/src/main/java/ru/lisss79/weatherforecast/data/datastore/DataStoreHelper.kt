@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryVariant
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryFactory
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryVariant
 import ru.lisss79.weatherforecast.entities.CurrentWeatherDetails
 import ru.lisss79.weatherforecast.entities.DailyWeatherDetails
 import ru.lisss79.weatherforecast.entities.ForecastMode
@@ -26,6 +28,8 @@ import ru.lisss79.weatherforecast.entities.Values
 import ru.lisss79.weatherforecast.entities.WeatherQuery
 
 class DataStoreHelper(private val context: Context, private val scope: CoroutineScope) {
+
+    private val LOCATION_REPOSITORY_KEY = stringPreferencesKey("locationRepository")
     private val GEOCODER_REPOSITORY_KEY = stringPreferencesKey("geocoderRepository")
     private val FORECAST_MODE_KEY = stringPreferencesKey("forecastMode")
     private val PLACES_LIST_KEY = stringSetPreferencesKey("placesList")
@@ -37,6 +41,13 @@ class DataStoreHelper(private val context: Context, private val scope: Coroutine
 
     private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
 
+    val locationRepositoryFlow: Flow<LocationRepositoryVariant> = context.dataStore.data
+        .map { preferences ->
+            LocationRepositoryVariant.valueOf(
+                preferences[LOCATION_REPOSITORY_KEY]
+                    ?: LocationRepositoryVariant.default.name
+            )
+        }
     val geocoderRepositoryFlow: Flow<GeocoderRepositoryVariant> = context.dataStore.data
         .map { preferences ->
             GeocoderRepositoryVariant.valueOf(
@@ -101,6 +112,13 @@ class DataStoreHelper(private val context: Context, private val scope: Coroutine
         )
     }
 
+    fun setLocationRepository(selectedLocation: LocationRepositoryVariant) {
+        scope.launch {
+            context.dataStore.edit { settings ->
+                settings[LOCATION_REPOSITORY_KEY] = selectedLocation.name
+            }
+        }
+    }
     fun setGeocoderRepository(selectedGeocoder: GeocoderRepositoryVariant) {
         scope.launch {
             context.dataStore.edit { settings ->

@@ -11,6 +11,7 @@ import org.kodein.di.DI
 import org.kodein.di.DIAware
 import org.kodein.di.instance
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryVariant
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryVariant
 import ru.lisss79.weatherforecast.domain.coords.GetCoordsUseCase
 import ru.lisss79.weatherforecast.domain.places.GetPlaceByCoordsUseCase
 import ru.lisss79.weatherforecast.domain.timezone.GetTimeOffsetUseCase
@@ -201,6 +202,7 @@ class WeatherViewModel(override val di: DI) : ViewModel(), DIAware {
     }
 
     suspend fun getCoords(
+        locationRepository: LocationRepositoryVariant,
         selectedPlace: Int = Values.selectedPlaceDefault,
         placesList: Set<Site>? = null
     ) {
@@ -218,7 +220,7 @@ class WeatherViewModel(override val di: DI) : ViewModel(), DIAware {
 
         _loading.value = LoadingState.LOADING_COORDS
         if (selectedPlace == Values.selectedPlaceDefault) {
-            val coordsResult = getCoordsUseCase()
+            val coordsResult = getCoordsUseCase(locationRepository)
             if (coordsResult.isSuccess) {
                 _errors.value = Errors.NO_ERRORS
                 setCoords(coordsResult.getOrNull())

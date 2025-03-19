@@ -123,6 +123,7 @@ fun refreshData(
     viewModel.resetError()
     scope.launch(SupervisorJob()) {
         val geocoderRepository = dataStoreHelper.geocoderRepositoryFlow.first()
+        val locationRepository = dataStoreHelper.locationRepositoryFlow.first()
         val selectedPlace = dataStoreHelper.selectedPlaceFlow.first()
         val placesList = dataStoreHelper.placesListFlow.first()
         val forecastMode = dataStoreHelper.forecastModeFlow.first()
@@ -132,7 +133,11 @@ fun refreshData(
             val newPlaces = viewModel.updateTimeOffset(placesList)
             dataStoreHelper.setPlacesList(newPlaces)
         }
-        viewModel.getCoords(selectedPlace = selectedPlace, placesList = placesList)
+        viewModel.getCoords(
+            locationRepository = locationRepository,
+            selectedPlace = selectedPlace,
+            placesList = placesList
+        )
         viewModel.getCurrentWeatherAndForecast(
             forecastMode = forecastMode,
             placesList = placesList,

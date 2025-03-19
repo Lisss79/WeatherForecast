@@ -9,6 +9,8 @@ import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepository
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryMapsCo
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryYandex
 import ru.lisss79.weatherforecast.data.repositories.location.LocationRepository
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryFactory
+import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryGoogle
 import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryHuawei
 import ru.lisss79.weatherforecast.data.repositories.timezone.TimeZoneRepository
 import ru.lisss79.weatherforecast.data.repositories.timezone.TimeZoneRepositoryTimeapi
@@ -35,10 +37,16 @@ val repositoryModule = DI.Module(name = "Repository") {
     bindSingleton<GeocoderRepository>(tag = MAPSCO) {
         GeocoderRepositoryMapsCo(instance<GeocoderMapsCoApi>())
     }
-    bindSingleton<LocationRepository> {
+    bindSingleton<LocationRepository>(tag = HUAWEI) {
         LocationRepositoryHuawei()
+    }
+    bindSingleton<LocationRepository>(tag = GOOGLE) {
+        LocationRepositoryGoogle()
     }
     bindSingleton<GeocoderRepositoryFactory> {
         GeocoderRepositoryFactory(di)
+    }
+    bindSingleton<LocationRepositoryFactory> {
+        LocationRepositoryFactory(di)
     }
 }
