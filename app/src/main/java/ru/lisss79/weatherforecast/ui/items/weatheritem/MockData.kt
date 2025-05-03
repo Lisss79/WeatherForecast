@@ -6,6 +6,7 @@ import ru.lisss79.weatherforecast.entities.weather.DailyWeatherState
 import ru.lisss79.weatherforecast.entities.weather.UniversalTime
 import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.ZonedDateTime
 
 object MockData {
@@ -37,7 +38,9 @@ object MockData {
             windDirectionDominant = 45f,
             precipitationSum = 15f,
             precipitationProbability = 75f,
-            weatherCode = 63
+            weatherCode = 63,
+            sunrise = LocalTime.now(),
+            sunset = LocalTime.now()
         )
     )
     val usualCoords = Coords(11.11, -22.22)

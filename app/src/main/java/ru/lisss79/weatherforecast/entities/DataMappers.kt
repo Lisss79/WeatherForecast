@@ -18,7 +18,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeParseException
-import ru.lisss79.weatherforecast.entities.geocoder.maps_co.Address as MapsCoAddress
 
 object DataMappers {
 
@@ -70,7 +69,7 @@ object DataMappers {
                 }
             }
 
-            if (site != null) sites.add(site)
+            sites.add(site)
         }
         return sites.ifEmpty { null }
     }
@@ -227,7 +226,7 @@ object DataMappers {
                         surfacePressure = getDataOrNull(it.surfacePressure, index),
                         cloudCover = getDataOrNull(it.cloudCover, index),
                         weatherCode = getDataOrNull(it.weatherCode, index),
-                        isDay = getDataOrNull(it.isDay.toBooleanArray(), index)
+                        isDay = getDataOrNull(it.isDay.toBooleanArray(), index),
                     )
                 )
                 data.add(item)
@@ -259,6 +258,8 @@ object DataMappers {
                         showersSum = getDataOrNull(it.showersSum, index),
                         snowfallSum = getDataOrNull(it.snowfallSum, index),
                         weatherCode = getDataOrNull(it.weatherCode, index),
+                        sunrise = parseLocalTime(it.sunrise[index]),
+                        sunset = parseLocalTime(it.sunset[index]),
                     )
                 )
                 data.add(item)
@@ -282,6 +283,14 @@ object DataMappers {
     private fun parseLocalDate(time: String?) =
         try {
             LocalDate.parse(time)
+        } catch (e: DateTimeParseException) {
+            e.printStackTrace()
+            null
+        }
+
+    private fun parseLocalTime(time: String?) =
+        try {
+            LocalDateTime.parse(time).toLocalTime()
         } catch (e: DateTimeParseException) {
             e.printStackTrace()
             null

@@ -17,6 +17,8 @@ import ru.lisss79.weatherforecast.entities.SHOWERS
 import ru.lisss79.weatherforecast.entities.SHOWERS_SUM
 import ru.lisss79.weatherforecast.entities.SNOWFALL
 import ru.lisss79.weatherforecast.entities.SNOWFALL_SUM
+import ru.lisss79.weatherforecast.entities.SUNRISE
+import ru.lisss79.weatherforecast.entities.SUNSET
 import ru.lisss79.weatherforecast.entities.SURFACE_PRESSURE
 import ru.lisss79.weatherforecast.entities.TEMPERATURE
 import ru.lisss79.weatherforecast.entities.TEMPERATURE_MAX
@@ -85,6 +87,8 @@ data class WeatherData(
         @SerializedName(SNOWFALL_SUM) var snowfallSum : ArrayList<Float> = arrayListOf(),
         @SerializedName(PRECIPITATION_PROBABILITY) var precipitationProbabilityMean : ArrayList<Float> = arrayListOf(),
         @SerializedName(WEATHER_CODE) var weatherCode: ArrayList<Int> = arrayListOf(),
+        @SerializedName(SUNRISE) var sunrise: ArrayList<String> = arrayListOf(),
+        @SerializedName(SUNSET) var sunset: ArrayList<String> = arrayListOf(),
     )
 
 }

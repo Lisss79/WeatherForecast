@@ -4,14 +4,11 @@ import org.kodein.di.DI
 import org.kodein.di.bindSingleton
 import org.kodein.di.instance
 import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepositoryFactory
-import ru.lisss79.weatherforecast.data.repositories.location.LocationRepository
 import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryFactory
-import ru.lisss79.weatherforecast.data.repositories.timezone.TimeZoneRepository
 import ru.lisss79.weatherforecast.data.repositories.weather.WeatherRepository
 import ru.lisss79.weatherforecast.domain.coords.GetCoordsUseCase
 import ru.lisss79.weatherforecast.domain.places.GetPlaceByCoordsUseCase
 import ru.lisss79.weatherforecast.domain.places.GetPlacesByNameUseCase
-import ru.lisss79.weatherforecast.domain.timezone.GetTimeOffsetUseCase
 import ru.lisss79.weatherforecast.domain.weather.GetCurrentAndDailyWeatherUseCase
 import ru.lisss79.weatherforecast.domain.weather.GetCurrentAndHourlyWeatherUseCase
 import ru.lisss79.weatherforecast.domain.weather.GetCurrentWeatherUseCase
@@ -31,19 +28,12 @@ val useCasesModule = DI.Module(name = "UseCase") {
         GetWeatherFromDifferentPlacesUseCase(instance<WeatherRepository>())
     }
     bindSingleton<GetPlacesByNameUseCase> {
-        GetPlacesByNameUseCase(
-            instance<GeocoderRepositoryFactory>(), instance<TimeZoneRepository>()
-        )
+        GetPlacesByNameUseCase(instance<GeocoderRepositoryFactory>())
     }
     bindSingleton<GetPlaceByCoordsUseCase> {
-        GetPlaceByCoordsUseCase(
-            instance<GeocoderRepositoryFactory>(), instance<TimeZoneRepository>()
-        )
+        GetPlaceByCoordsUseCase(instance<GeocoderRepositoryFactory>())
     }
     bindSingleton<GetCoordsUseCase> {
         GetCoordsUseCase(instance<LocationRepositoryFactory>())
-    }
-    bindSingleton<GetTimeOffsetUseCase> {
-        GetTimeOffsetUseCase(instance<TimeZoneRepository>())
     }
 }

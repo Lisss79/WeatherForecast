@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import ru.lisss79.weatherforecast.entities.TIME
 import ru.lisss79.weatherforecast.entities.WeatherDetail
@@ -17,6 +18,7 @@ import ru.lisss79.weatherforecast.entities.toInt
 import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 import ru.lisss79.weatherforecast.entities.weather.WeatherException
 import ru.lisss79.weatherforecast.ui.helpers.FormatterForUi
+import java.time.LocalTime
 
 @Composable
 fun WeatherDetailsItem(
@@ -59,6 +61,7 @@ fun WeatherDetailsItem(
                         is Float -> value
                         is Int -> value.toFloat()
                         is Boolean -> value.toInt().toFloat()
+                        is LocalTime -> (value.hour * 100 + value.minute).toFloat()
                         else -> throw (WeatherException("Unknown field type: ${field.name}"))
                     }
                     detailsList.add(valueFloat to field.name)
@@ -83,4 +86,13 @@ fun AddWeatherDetails(lines: List<String>) {
             style = MaterialTheme.typography.bodySmall
         )
     }
+}
+
+@Preview
+@Composable
+fun WeatherDetailsItemPreview() {
+    WeatherDetailsItem(
+        universalWeatherState = MockData.usualDailyWeatherState,
+        weatherQuery = WeatherQuery()
+    )
 }

@@ -1,8 +1,5 @@
 package ru.lisss79.weatherforecast.entities
 
-import kotlinx.coroutines.flow.first
-import java.util.concurrent.Flow.Subscription
-
 object Values {
     val selectedPlaceDefault = -1
     var locationSensitivityMeters = 100
@@ -44,7 +41,9 @@ enum class WeatherDetail(val menuName: String, val queryName: String, val fieldN
     SURFACE_PRESSURE("Surface pressure", ru.lisss79.weatherforecast.entities.SURFACE_PRESSURE, "surfacePressure"),
     CLOUD_COVER("Cloud cover", ru.lisss79.weatherforecast.entities.CLOUD_COVER, "cloudCover"),
     WEATHER_CODE("Weather code", ru.lisss79.weatherforecast.entities.WEATHER_CODE, "weatherCode"),
-    IS_DAY("Is day", ru.lisss79.weatherforecast.entities.IS_DAY, "isDay");
+    IS_DAY("Is day", ru.lisss79.weatherforecast.entities.IS_DAY, "isDay"),
+    SUNRISE("Sunrise time", ru.lisss79.weatherforecast.entities.SUNRISE, "sunrise"),
+    SUNSET("Sunset time", ru.lisss79.weatherforecast.entities.SUNSET, "sunset");
 
     companion object {
         val default = setOf(TEMPERATURE)
@@ -127,7 +126,9 @@ enum class DailyWeatherDetails(val menuName: String, val queryName: String) {
     RAIN_SUM("Rain sum", ru.lisss79.weatherforecast.entities.RAIN_SUM),
     SHOWERS_SUM("Showers sum", ru.lisss79.weatherforecast.entities.SHOWERS_SUM),
     SNOWFALL_SUM("Snowfall sum", ru.lisss79.weatherforecast.entities.SNOWFALL_SUM),
-    WEATHER_CODE("Weather code", ru.lisss79.weatherforecast.entities.WEATHER_CODE);
+    WEATHER_CODE("Weather code", ru.lisss79.weatherforecast.entities.WEATHER_CODE),
+    SUNRISE("Sunrise time", ru.lisss79.weatherforecast.entities.SUNRISE),
+    SUNSET("Sunset time", ru.lisss79.weatherforecast.entities.SUNSET);
 
     companion object {
         val default = setOf(TEMPERATURE_MIN, TEMPERATURE_MAX)

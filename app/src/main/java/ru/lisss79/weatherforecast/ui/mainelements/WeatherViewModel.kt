@@ -14,7 +14,6 @@ import ru.lisss79.weatherforecast.data.repositories.geocoders.GeocoderRepository
 import ru.lisss79.weatherforecast.data.repositories.location.LocationRepositoryVariant
 import ru.lisss79.weatherforecast.domain.coords.GetCoordsUseCase
 import ru.lisss79.weatherforecast.domain.places.GetPlaceByCoordsUseCase
-import ru.lisss79.weatherforecast.domain.timezone.GetTimeOffsetUseCase
 import ru.lisss79.weatherforecast.domain.weather.GetCurrentAndDailyWeatherUseCase
 import ru.lisss79.weatherforecast.domain.weather.GetCurrentAndHourlyWeatherUseCase
 import ru.lisss79.weatherforecast.domain.weather.GetCurrentWeatherUseCase
@@ -37,7 +36,6 @@ class WeatherViewModel(override val di: DI) : ViewModel(), DIAware {
     private val getCurrentAndHourlyWeatherUseCase by instance<GetCurrentAndHourlyWeatherUseCase>()
     private val getCurrentAndDailyWeatherUseCase by instance<GetCurrentAndDailyWeatherUseCase>()
     private val getWeatherFromDifferentPlacesUseCase by instance<GetWeatherFromDifferentPlacesUseCase>()
-    private val getTimeOffsetUseCase by instance<GetTimeOffsetUseCase>()
 
     private var _currentWeather = MutableStateFlow<UniversalWeatherState?>(null)
     val currentWeather: StateFlow<UniversalWeatherState?> = _currentWeather.asStateFlow()
@@ -263,15 +261,6 @@ class WeatherViewModel(override val di: DI) : ViewModel(), DIAware {
             }
         }
         _loading.value = LoadingState.FINISHED
-    }
-
-    suspend fun updateTimeOffset(
-        placesList: Set<Site>
-    ): Set<Site> {
-        _loading.value = LoadingState.LOADING_TIMEZONES
-        val newSet = placesList.map { site -> getTimeOffsetUseCase(site) }.toSet()
-        _loading.value = LoadingState.FINISHED
-        return newSet
     }
 
     fun removeForecastWeather() {

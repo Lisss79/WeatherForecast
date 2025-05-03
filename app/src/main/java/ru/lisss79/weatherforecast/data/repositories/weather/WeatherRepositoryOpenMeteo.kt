@@ -6,7 +6,7 @@ import ru.lisss79.weatherforecast.entities.Coords
 import ru.lisss79.weatherforecast.entities.DataMappers
 import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 
-class WeatherRepositoryOpenMeteo(val weatherApi: WeatherApi) :WeatherRepository {
+class WeatherRepositoryOpenMeteo(val weatherApi: WeatherApi) : WeatherRepository {
 
     override suspend fun getCurrentWeather(
         coords: Coords, currentRequest: String

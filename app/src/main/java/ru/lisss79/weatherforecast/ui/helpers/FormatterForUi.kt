@@ -6,7 +6,7 @@ import ru.lisss79.weatherforecast.entities.WeatherDetail
 import ru.lisss79.weatherforecast.entities.weather.UniversalTime
 import java.text.DecimalFormat
 import java.time.LocalDate
-import java.time.ZoneOffset
+import java.time.LocalTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
@@ -52,6 +52,8 @@ object FormatterForUi {
             WeatherDetail.CLOUD_COVER.fieldName -> detailToFloatText(detail, "Cloud cover")
             WeatherDetail.WEATHER_CODE.fieldName -> weatherCodeToText(detail)
             WeatherDetail.IS_DAY.fieldName -> isDayToText(detail)
+            WeatherDetail.SUNRISE.fieldName -> detailToLocalTimeText(detail, "Sunrise")
+            WeatherDetail.SUNSET.fieldName -> detailToLocalTimeText(detail, "Sunset")
             else -> "Incorrect data"
         }
         return out
@@ -66,13 +68,9 @@ object FormatterForUi {
     }
 
     private fun dateTimeToText(time: ZonedDateTime?, utcOffset: Int?): String {
-        val newTime = if (utcOffset == null || time == null) time
-        else {
-            time.withZoneSameInstant(ZoneOffset.ofTotalSeconds(utcOffset * 60))
-        }
         val formatter = DateTimeFormatter
             .ofPattern("dd.MM.yyyy HH:mm:ss", Locale.getDefault())
-        val out = newTime?.let {
+        val out = time?.let {
             formatter.format(it)
         } ?: "no data"
         return out
@@ -85,6 +83,17 @@ object FormatterForUi {
             formatter.format(it)
         } ?: "no data"
         return out
+    }
+
+    private fun detailToLocalTimeText(time: Float?, propertyName: String): String {
+        val formatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
+        val out = time?.let {
+            val hour = time.toInt() / 100
+            val min = time.toInt() % 100
+            val localTime = LocalTime.of(hour, min)
+            formatter.format(localTime)
+        } ?: "no data"
+        return "$propertyName: $out"
     }
 
     fun temperatureToText(temperature: Float?, propertyName: String): String {
