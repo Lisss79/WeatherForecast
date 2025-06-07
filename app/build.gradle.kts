@@ -3,8 +3,7 @@ import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    id("com.huawei.agconnect")
-    kotlin("plugin.serialization") version "2.0.20"
+    alias(libs.plugins.jetbrains.kotlin.plugin.serialization)
     alias(libs.plugins.compose.compiler)
 }
 
@@ -32,6 +31,8 @@ android {
         resValue("string", "HUAWEI_API_KEY", huaweiApiKey)
         resValue("string", "YANDEX_API_KEY", yandexApiKey)
         resValue("string", "MAPSCO_API_KEY", mapscoApiKey)
+
+        setProperty("archivesBaseName", "WeaterForecast")
     }
 
     buildTypes {

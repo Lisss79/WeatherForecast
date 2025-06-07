@@ -2,9 +2,11 @@ package ru.lisss79.weatherforecast.ui.mainelements
 
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -46,7 +48,9 @@ class MainActivity : ComponentActivity(), DIAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataStoreHelper = DataStoreHelper(this, scope)
-        enableEdgeToEdge()
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
         setContent {
             WeatherForecastTheme {
                 CheckPermission(

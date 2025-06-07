@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -36,7 +35,7 @@ fun WeatherItem(
     loadingState: LoadingState = LoadingState.FINISHED
 ) {
     Surface(
-        modifier = modifier.wrapContentHeight(),
+        modifier = modifier,
         color = MaterialTheme.colorScheme.surfaceVariant,
         shape = MaterialTheme.shapes.medium
     ) {
@@ -47,14 +46,10 @@ fun WeatherItem(
             loadingState == LoadingState.LOADING_COORDS && universalWeatherState == null ->
                 NoDataText("Loading GPS coordinates...")
 
-            loadingState == LoadingState.LOADING_TIMEZONES && universalWeatherState == null ->
-                NoDataText("Updating timezones...")
-
             else -> {
                 if (universalWeatherState != null) {
                     Row(
                         modifier = Modifier
-                            .defaultMinSize(minHeight = 100.dp)
                             .fillMaxWidth()
                             .padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.SpaceAround,

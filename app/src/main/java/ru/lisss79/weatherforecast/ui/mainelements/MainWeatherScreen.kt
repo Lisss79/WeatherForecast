@@ -40,6 +40,7 @@ import ru.lisss79.weatherforecast.entities.ForecastMode
 import ru.lisss79.weatherforecast.entities.PlacesSortingMode
 import ru.lisss79.weatherforecast.entities.Values
 import ru.lisss79.weatherforecast.entities.WeatherQuery
+import ru.lisss79.weatherforecast.entities.weather.UniversalTime
 import ru.lisss79.weatherforecast.entities.weather.UniversalWeatherState
 import ru.lisss79.weatherforecast.ui.items.GettingDataScreen
 import ru.lisss79.weatherforecast.ui.items.ToastShowing
@@ -148,7 +149,8 @@ fun MainWeatherScreen(
                             weatherQuery = fieldsToShow,
                             columnState = columnState,
                             placeStates = sortedPairs?.value?.map { it.first }?.toSet(),
-                            showPlace = true
+                            showPlace = true,
+                            scrollIndex = null
                         )
                     } else {
                         UniversalForecastWeatherList(
@@ -157,7 +159,9 @@ fun MainWeatherScreen(
                             weatherQuery = fieldsToShow,
                             columnState = columnState,
                             placeStates = null,
-                            showPlace = false
+                            showPlace = false,
+                            scrollIndex = currentWeatherState.value
+                                ?.getNearestItemIndexFrom(forecastWeatherState.value)
                         )
                     }
                 }
@@ -222,4 +226,22 @@ private fun getSortedPairsList(
         }
     }
     return newList.map { it.first }
+}
+
+private fun UniversalWeatherState.getNearestItemIndexFrom(
+    weatherStateList: List<UniversalWeatherState?>?
+): Int? {
+    val currentTime = this.universalTime.let {
+        if (it is UniversalTime.DateTime) it.dateTime else null
+    }
+    if (currentTime == null || weatherStateList.isNullOrEmpty()) return null
+    var index = 0
+    while (index < weatherStateList.size) {
+        val timeFromList = weatherStateList[index]?.universalTime?.let {
+            if (it is UniversalTime.DateTime) it.dateTime else null
+        }
+        if (timeFromList != null && timeFromList > currentTime) break
+        index++
+    }
+    return index.takeIf { it < weatherStateList.size }
 }
